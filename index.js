@@ -27,11 +27,11 @@ const replaceElement = (temp, product) => {
 }
 
 const server = http.createServer((req, res) => {
-    
-    const pathName = req.url;
+
+    const { pathname, query } = url.parse(req.url, true);
 
     // OVERVIEW
-    if(pathName === '/' || pathName === '/overview'){
+    if(pathname === '/' || pathname === '/overview'){
         res.writeHead(200, { 'Content-type': 'text/html' });
 
         const cardsHTML = dataObj.map(el => replaceElement(tempCard, el)).join('');
@@ -41,11 +41,15 @@ const server = http.createServer((req, res) => {
         res.end(output);
     }
     // PRODUCT PAGE
-    else if (pathName === '/product'){
-        res.end('product paage')
+    else if (pathname === '/product'){
+        res.writeHead(200, { 'Content-type': 'text/html' });
+        const product = dataObj[query.id];
+        
+        const output = replaceElement(tempProduct, product);
+        res.end(output);
     }
     // API
-    else if (pathName === '/api'){
+    else if (pathname === '/api'){
         res.writeHead(200, { 'Content-type': 'application/json' })
         res.end(data)
     } 
